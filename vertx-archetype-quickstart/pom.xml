@@ -4,9 +4,31 @@
     
     <groupId>mgraciano</groupId>
     <artifactId>io.vertx.archetype.quickstart</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1</version>
     <packaging>jar</packaging>
 
     <name>Vert.x Quickstart Archetype</name>
+    
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
+    <scm>
+        <connection>scm:git:git@github.com:mgraciano/jm-vert.x.git</connection>
+        <developerConnection>scm:git:git@github.com:mgraciano/jm-vert.x.git</developerConnection>
+        <url>git@github.com:mgraciano/jm-vert.x.git</url>
+    </scm>
+    
+    <developers>
+        <developer>
+            <name>Michel Graciano</name>
+            <email>michel.graciano@gmail.com</email>
+            <url>http://www.michelgraciano.com.br/</url>
+        </developer>
+    </developers>
+    
 </project>
