@@ -1,0 +1,36 @@
+<html>
+    <head>
+        <title>Exemplo com SockJS</title>
+        <script src="//cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js"></script>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+        <script>
+            var sock = new SockJS('http://localhost:8080/app');
+            sock.onopen = function () {
+                console.log('socket aberto.');
+            };
+            sock.onmessage = function (e) {
+                console.log('mensagem', e.data);
+//                alert('mensagem recebida do servidor: ' + e.data);
+            };
+            sock.onclose = function () {
+                console.log('socket fechado.');
+            };
+
+            function enviar(mensagem) {
+                if (sock.readyState === SockJS.OPEN) {
+                    console.log("enviando mensagem...");
+                    sock.send(mensagem);
+                    console.log("mensagem enviada.");
+                } else {
+                    console.log("O socket não está aberto.");
+                }
+            }
+        </script>
+        <form onsubmit="return false;">
+            <input type="text" name="mensagem" value="Olá, Java Magazine!"/>
+            <input type="button" value="Enviar mensagem" onclick="enviar(this.form.mensagem.value)"/>
+        </form>
+    </body>
+</html>
