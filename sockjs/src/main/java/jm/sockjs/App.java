@@ -20,14 +20,14 @@ public class App extends Verticle {
 
     @Override
     public void start() {
-        final Logger log = container.logger();
-        final EventBus eb = vertx.eventBus();
+        final Logger logger = container.logger();
+        final EventBus eventBus = vertx.eventBus();
         final HttpServer servidor = vertx.createHttpServer();
 
         // Cria manipulador de chamadas HTTP para servir página estáticas
-        servidor.requestHandler((HttpServerRequest req) -> {
-            if (req.path().equals("/")) {
-                req.response().sendFile("sockjs/index.html");
+        servidor.requestHandler((HttpServerRequest requisicao) -> {
+            if (requisicao.path().equals("/")) {
+                requisicao.response().sendFile("sockjs/index.html");
             }
         });
 
@@ -37,27 +37,27 @@ public class App extends Verticle {
                 (final SockJSSocket socket) -> {
                     socket.dataHandler((Buffer mensagem) -> {
                         // Publica a mensagem recebida no event bus
-                        eb.publish(CANAL_MENSAGEM, mensagem);
+                        eventBus.publish(CANAL_MENSAGEM, mensagem);
                     });
 
                     // Registra manipulador do event bus apropriadamente
-                    eb.registerHandler(CANAL_MENSAGEM, new SockJSMensagemHandler(socket));
+                    eventBus.registerHandler(CANAL_MENSAGEM, new SockJSMensagemHandler(socket));
 
                     // Tratamento de eventuais exceções
                     socket.exceptionHandler((Throwable event) -> {
-                        log.error("Erro em conexão com o socket.", event);
+                        logger.error("Erro em conexão com o socket.", event);
                     });
                 });
 
         final String pastaUsuario = System.getProperty("user.home");
         // Registra uso de arquivo no sistema de arquivos local, na pasta de usuário
-        vertx.fileSystem().open(pastaUsuario + "/mensagens-log.dat", (AsyncResult<AsyncFile> ar) -> {
-            if (ar.succeeded()) {
-                final AsyncFile arquivo = ar.result();
+        vertx.fileSystem().open(pastaUsuario + "/mensagens-log.dat", (AsyncResult<AsyncFile> resultado) -> {
+            if (resultado.succeeded()) {
+                final AsyncFile arquivo = resultado.result();
                 // Registra manipulador do event bus para registro em arquivo de log
-                eb.registerHandler(CANAL_MENSAGEM, new ArquivoMensagemHandler(arquivo));
+                eventBus.registerHandler(CANAL_MENSAGEM, new ArquivoMensagemHandler(arquivo));
             } else {
-                log.error("Falha ao abrir arquivo.", ar.cause());
+                logger.error("Falha ao abrir arquivo.", resultado.cause());
             }
         });
 
